@@ -18,7 +18,7 @@ var titleField;
 export default class FullCalendarComponent extends NavigationMixin(LightningElement) {
   calendar;
   fullCalendarInitialized = false;
-  
+
   @api titleField;
   @api objectName;
   @api startField;
@@ -35,10 +35,9 @@ export default class FullCalendarComponent extends NavigationMixin(LightningElem
 
   @track calendarLabel;
 
-  
   connectedCallback() {
-    this.addEventListener('fceventclick', this.handleEventClick.bind(this));
-    //this.addEventListener('mousewheel', this.handleScroll.bind(this));  
+    this.addEventListener("fceventclick", this.handleEventClick.bind(this));
+    //this.addEventListener('mousewheel', this.handleScroll.bind(this));
   }
 
   renderedCallback() {
@@ -71,13 +70,13 @@ export default class FullCalendarComponent extends NavigationMixin(LightningElem
           loadStyle(this, fullCalendar + "/packages/timegrid/main.css"),
           loadScript(this, fullCalendar + "/packages/interaction/main.js"),
           loadScript(this, fullCalendar + "/packages/moment/main.js"),
-          loadScript(this, fullCalendar + "/packages/moment-timezone/main.js"),
+          loadScript(this, fullCalendar + "/packages/moment-timezone/main.js")
         ]).then(() => {
           console.log("init");
           this.init();
         });
       })
-      .catch(error => {
+      .catch((error) => {
         console.log("error", error);
         this.dispatchEvent(
           new ShowToastEvent({
@@ -93,7 +92,7 @@ export default class FullCalendarComponent extends NavigationMixin(LightningElem
     var calendarEl = this.template.querySelector(".calendar");
     // eslint-disable-next-line no-undef
     this.calendar = new FullCalendar.Calendar(calendarEl, {
-      plugins: ["dayGrid", "timeGrid", "list","interaction","moment"],
+      plugins: ["dayGrid", "timeGrid", "list", "interaction", "moment"],
       views: {
         listDay: { buttonText: "list day" },
         listWeek: { buttonText: "list week" },
@@ -104,14 +103,18 @@ export default class FullCalendarComponent extends NavigationMixin(LightningElem
         dayGridWeek: { buttonText: "week" },
         dayGridDay: { buttonText: "day" }
       },
-      
-      eventClick: info => {
-        const selectedEvent = new CustomEvent('fceventclick', { detail: info });
-        console.log("eventClick",info);
+
+      eventClick: (info) => {
+        const selectedEvent = new CustomEvent("fceventclick", { detail: info });
+        console.log("eventClick", info);
         this.dispatchEvent(selectedEvent);
       },
-      eventMouseEnter: info => {console.log("mouse enter", info)},
-      dateClick:info => {console.log("date click", info)},
+      eventMouseEnter: (info) => {
+        console.log("mouse enter", info);
+      },
+      dateClick: (info) => {
+        console.log("date click", info);
+      },
       header: false,
       /*header: {
         left: "title",
@@ -123,12 +126,12 @@ export default class FullCalendarComponent extends NavigationMixin(LightningElem
         {
           events: this.eventSourceHandler,
           id: "custom"
-        },
+        }
         //{
         //  events: "https://fullcalendar.io/demo-events.json",
         //  id: "demo"
         //}
-      ],
+      ]
     });
     this.calendar.render();
     this.calendarLabel = this.calendar.view.title;
@@ -155,7 +158,7 @@ export default class FullCalendarComponent extends NavigationMixin(LightningElem
   }
 
   monthlyViewHandler() {
-    this.calendar.changeView('dayGridMonth');
+    this.calendar.changeView("dayGridMonth");
     this.calendarLabel = this.calendar.view.title;
   }
 
@@ -170,7 +173,7 @@ export default class FullCalendarComponent extends NavigationMixin(LightningElem
   }
 
   refresh() {
-    var eventSource = this.calendar.getEventSourceById('custom');
+    var eventSource = this.calendar.getEventSourceById("custom");
     eventSource.refetch();
   }
 
@@ -179,23 +182,23 @@ export default class FullCalendarComponent extends NavigationMixin(LightningElem
     event.stopImmediatePropogation();
   }
 
-
   handleEventClick(event) {
     let info = event.detail;
-    console.log('Event: ' + info.event.title);
-    console.log('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
-    console.log('View: ' + info.view.type);
+    console.log("Event: " + info.event.title);
+    console.log(
+      "Coordinates: " + info.jsEvent.pageX + "," + info.jsEvent.pageY
+    );
+    console.log("View: " + info.view.type);
     console.log(info);
     this[NavigationMixin.Navigate]({
-      type: 'standard__recordPage',
+      type: "standard__recordPage",
       attributes: {
-          recordId: info.event.id,
-          actionName: 'view',
-      },
+        recordId: info.event.id,
+        actionName: "view"
+      }
     });
     // change the border color just for fun
     //info.el.style.borderColor = 'red';
-
   }
 
   eventSourceHandler(info, successCallback, failureCallback) {
@@ -210,7 +213,7 @@ export default class FullCalendarComponent extends NavigationMixin(LightningElem
       allDayField: allDayField,
       additionalFilter: additionalFilter
     })
-      .then(result => {
+      .then((result) => {
         if (result) {
           let events = result;
           let e = [];
@@ -227,12 +230,12 @@ export default class FullCalendarComponent extends NavigationMixin(LightningElem
               });
             }
           }
-          console.log("num events = ",e.length);
+          console.log("num events = ", e.length);
           successCallback(e);
         }
       })
-      .catch(error => {
-        console.error("error calling apex controller:",error);
+      .catch((error) => {
+        console.error("error calling apex controller:", error);
         failureCallback(error);
       });
   }
